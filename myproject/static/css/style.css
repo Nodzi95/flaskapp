@@ -1,0 +1,21 @@
+.form-check{
+    position: absolute;
+    left: 10px;
+}
+
+#customBtn{
+    margin: 5px;
+}
+
+#exampleModalLabel{
+    margin: 5px;
+}
+
+.right{
+    position: relative;
+    width: 30%;
+}
+
+.navbar-expand-lg .navbar-nav {
+    flex-direction: row-reverse;
+}

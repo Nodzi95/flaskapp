@@ -1,0 +1,91 @@
+{% extends "base.html"%}
+
+
+
+{% block content %}
+<div class="container">
+
+    {%if error%}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {%endif%}
+    {%if user%}
+    <h1>Task manager</h1>
+    <p>Click on the task to view it</p>
+    {%for task in tasks%}
+    <button type="button" id="customBtn" class={%if task[6]=="ok" %}"btn btn-success" {%else%} "btn btn-danger"
+        {%endif%} data-bs-toggle="modal" data-bs-target="#myOutput{{ task[0] }}">{{task[1]}}</button>
+    {%endfor%}
+
+    <!-- TODO new page - load data from db -->
+    {%for task in tasks%}
+    <div class="modal fade" id="myOutput{{ task[0] }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{task[1]}}</h5>
+
+
+
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/task" method="POST" enctype=multipart/form-data>
+                        <input type="hidden" name="id" value="{{task[0]}}" />
+
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Name:</label>
+                            <input type="text" class="form-control" id="recipient-name" value="{{task[1]}}"
+                                name="task_name" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Description:</label>
+                            <textarea class="form-control" id="message-text" name="description"
+                                disabled>{{task[2]}}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="start">Deadline:</label>
+
+                            <label>{{task[4]}}</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start">Completed:</label>
+
+                            <label>{{task[5]}}</label>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Attachment:</label>
+                            <a href={{url_for('tasks.download_file', filename="" +task[0]|string+"/"+task[3]
+                                )}}>{{task[3]}}</a>
+                        </div>
+
+
+                        <div class="modal-footer">
+
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+
+                        </div>
+                    </form>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {%endfor%}
+    {%else%}
+    <h1>Welcome to my Task app</h1>
+    {%endif%}
+
+</div>
+{% endblock %}

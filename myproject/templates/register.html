@@ -1,0 +1,40 @@
+{% extends "base.html"%}
+
+{% block title%}
+Sign up
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Sign up</h1>
+    <br /><br />
+
+    {%if error%}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {%endif%}
+
+    <form method="POST">
+        <div class="mb-3">
+            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="User name" name="username"
+                value="{{username}}">
+
+        </div>
+        <div class="mb-3">
+            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"
+                name="password" value="{{password}}">
+        </div>
+
+        <div class="mb-3">
+            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Repeat your password"
+                name="password2">
+        </div>
+
+        <br />
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+</div>
+{% endblock %}
