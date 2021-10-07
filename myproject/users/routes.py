@@ -1,4 +1,5 @@
 from flask import Blueprint, session, request, redirect, render_template, url_for, flash
+from werkzeug.exceptions import abort
 from myproject.database.db import get_user, save_user
 from werkzeug.security import check_password_hash
 
@@ -16,6 +17,9 @@ def login():
         password = request.form["password"]
 
         user = get_user(username)
+
+        if user == -1:
+            abort(404)
 
         if user is None:
             error = f"User {username} not found"
@@ -57,6 +61,10 @@ def register():
 
         if not error:
             error = save_user(username, password)
+
+            if error == -1:
+                abort(404)
+
             if not error:
                 return redirect(url_for("auth.login"))
             else:

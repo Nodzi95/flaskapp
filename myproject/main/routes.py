@@ -1,5 +1,5 @@
 from logging import error
-from flask import Blueprint, session, render_template, request
+from flask import Blueprint, session, render_template, request, abort
 from myproject.database.db import get_tasks
 from myproject.tasks.utils import compareDates
 
@@ -21,6 +21,8 @@ def index():
             name = request.form.get("search")
 
         t = get_tasks(session.get("user_id"), name=name)
+        if t == -1:
+            abort(404)
 
         for tsk in t:
             mark = compareDates(tsk["deadline"])

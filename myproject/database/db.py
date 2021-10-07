@@ -1,13 +1,19 @@
-from os import path
+import os
 import sqlite3
 from werkzeug.security import generate_password_hash
 from flask import current_app
+from myproject.db_init import db_init
 
 
 def get_db():
     conn = None
+    new = False
     try:
+        if not os.path.isfile(current_app.config["DATABASE"]):
+            new = True
         conn = sqlite3.connect(current_app.config["DATABASE"])
+        if new:
+            db_init()
     except sqlite3.Error as e:
         print(e)
     return conn
@@ -15,17 +21,23 @@ def get_db():
 
 def get_all():
     db = get_db()
+    if db == None:
+        return -1
     return db.execute(f"SELECT * FROM user").fetchall()
 
 
 def get_user(user=None):
     db = get_db()
+    if db == None:
+        return -1
     return db.execute(f"SELECT * FROM user WHERE username='{user}'").fetchone()
 
 
 def save_user(user=None, password=None):
     error = None
     db = get_db()
+    if db == None:
+        return -1
     try:
         db.execute(
             f"INSERT INTO user (username, password) VALUES ('{user}', '{generate_password_hash(password)}')"
@@ -48,6 +60,8 @@ def save_task(
 ):
     error = None
     db = get_db()
+    if db == None:
+        return -1
 
     try:
         db.execute(
@@ -62,6 +76,8 @@ def save_task(
 
 def get_file(id):
     db = get_db()
+    if db == None:
+        return -1
     return db.execute(f"SELECT path_to_attachment FROM task WHERE id={id}").fetchone()
 
 
@@ -70,6 +86,8 @@ def update_task(
 ):
     error = None
     db = get_db()
+    if db == None:
+        return -1
     if path_to_attachment == "":
         path_to_attachment = get_file(id)[0]
     elif path_to_attachment == -1:
@@ -87,6 +105,8 @@ def update_task(
 
 def get_tasks(author_id, name="", finished=0):
     db = get_db()
+    if db == None:
+        return -1
     db.row_factory = sqlite3.Row
     c = db.cursor()
     query = ""
@@ -101,12 +121,16 @@ def get_tasks(author_id, name="", finished=0):
 
 def get_id_of_last_inserted():
     db = get_db()
+    if db == None:
+        return -1
     id = db.execute("SELECT max(id) FROM task").fetchone()
     return id[0]
 
 
 def delete_task(id):
     db = get_db()
+    if db == None:
+        return -1
 
     db.execute(f"DELETE FROM task WHERE id={id}")
     db.commit()

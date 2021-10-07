@@ -73,6 +73,8 @@ def task():
                 deadline=deadline,
                 completed=completed,
             )
+            if error == -1:
+                abort(404)
             last_id = get_id_of_last_inserted()
 
             if f:
@@ -91,6 +93,8 @@ def task():
                 deadline=deadline,
                 completed=completed,
             )
+            if error == -1:
+                abort(404)
             if f:
                 upload_file(id, filename)
 
@@ -105,7 +109,8 @@ def task():
 def delete():
     if request.method == "POST":
         id = request.form.get("id")
-        delete_task(int(id))
+        if delete_task(int(id)) == -1:
+            abort(404)
         uploads_dir = os.path.join(current_app.root_path, "uploads")
         user_dir = os.path.join(uploads_dir, str(session.get("user_id")))
         task_dir = os.path.join(user_dir, id)
@@ -145,6 +150,8 @@ def finished():
         if request.method == "POST":
             name = request.form.get("search")
         t = get_tasks(session.get("user_id"), name=name, finished=1)
+        if t == -1:
+            abort(404)
         for tsk in t:
             mark = compareDates(tsk["deadline"])
             if mark != "late":
